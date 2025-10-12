@@ -15,7 +15,7 @@ const Loading = () => {
         </div>
         {/* Animated Text */}
         <div className="flex space-x-1">
-          <h1 className="text-2xl font-bold text-light-deep-green tracking-wide">
+          <h1 className="text-2xl font-bold text-green-800 tracking-wide">
             {'growEasy'.split('').map((char, index) => (
               <span
                 key={index}

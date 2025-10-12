@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
-import axios from "axios"
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
 import { 
   Users, 
   Activity, 
@@ -13,10 +12,10 @@ import {
   Building, 
   LayoutDashboard 
 } from 'lucide-react';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ThemeToggle from '../../utils/ThemeToggle';
 import { toast } from 'sonner';
+import Loading from '../../utils/Loading';
 const modules = [
   { id: 1, name: 'HRM Dashboard', icon: Users, color: 'bg-blue-100 dark:bg-blue-900' },
   { id: 2, name: 'HMS Module', icon: Activity, color: 'bg-green-100 dark:bg-green-900' },
@@ -32,42 +31,52 @@ const modules = [
 
 const Home = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState()
-
+  const [user, setUser] = useState(null); // Initialize as null
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    if(!token){
-        navigate("/login")
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
     }
 
-    const fetchDashboard = async() => {
-        try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`, {
-                headers:{
-                    "Authorization":`Bearer ${token}`
-                }
-            })
-            if(response.ok){
-                 setUser(response.data)
-            toast.success("welcome back on board")
-            } else{
-                navigate("/login")
-            }
-           
-        } catch (error) {
-            console.log(error)
-             toast.error("an error occurred")
-          
+    const fetchDashboard = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        if (response.status === 200) { // Fixed: Use axios status check
+          console.log(response.data); // Debug: Log full response
+          setUser(response.data.user); // Fixed: Extract user from response.data.user
+          toast.success(response.data.message || "Welcome back on board!");
+        } else {
+          toast.error("Session expired. Please log in again.");
+          navigate("/login");
         }
-    }
+      } catch (error) {
+        console.error("Dashboard fetch error:", error); // Better logging
+        if (error.response?.status === 401) { // Handle unauthorized specifically
+          toast.error("Session expired. Please log in again.");
+          localStorage.removeItem("token"); // Clear invalid token
+          navigate("/login");
+        } else {
+          toast.error("An error occurred. Please try again.");
+        }
+      }
+    };
 
-    fetchDashboard()
-  }, [])
+    fetchDashboard();
+  }, []); // Empty dependency array: runs once on mount
 
   const handleCardClick = (id) => {
     navigate(`/module/${id}`);
   };
+
+  if (!user) {
+    return <Loading />; // Show loading until user data loads
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col relative">
@@ -87,19 +96,17 @@ const Home = () => {
               className="w-full md:w-80 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm focus:ring-2 focus:ring-blue-400 outline-none bg-white dark:bg-gray-800"
             />
           </div>
-         
         </div>
 
         {/* Modules Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Modules</h2>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{user.firstName} {user.lastName}</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">Access your professional tools</p>
           </div>
 
           <div className="flex items-center gap-2 mt-3 md:mt-0">
             <span className="text-gray-500 dark:text-gray-400 text-sm">Quick Access</span>
-          
           </div>
         </div>
 
