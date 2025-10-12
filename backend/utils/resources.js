@@ -8,6 +8,7 @@ import dotenv from "dotenv"
 import rateLimit from "express-rate-limit"
 import nodemailer from "nodemailer"
 import {validationResult, body} from "express-validator"
+import User from "../models/user/userSchema.js"
 dotenv.config()
 
 const JWT_SECRET = process.env.JWT_SECRET

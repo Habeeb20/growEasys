@@ -7,12 +7,10 @@ import Loading from '../../utils/Loading';
 import { savePendingRequest } from '../../db';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-const Signup = () => {
-  const navigate = useNavigate()
+
+const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
     email: '',
     password: '',
   });
@@ -29,19 +27,18 @@ const Signup = () => {
     setIsLoading(true);
     try {
       if (navigator.onLine) {
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/signup`, formData);
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, formData);
         const { token, message } = response.data;
         localStorage.setItem('token', token);
         dispatch(setCredentials({ token, user: { email: formData.email } }));
-        localStorage.setItem("email", formData.email)
-        toast.success(message || 'Signup successful!');
-        navigate("/verifyemail")
+        toast.success(message || 'Login successful!');
+        navigate("/dashboard")
       } else {
-        await savePendingRequest('auth/signup', 'POST', formData);
-        toast.info('Signup request queued. It will sync when you’re back online.');
+        await savePendingRequest('/auth/login', 'POST', formData);
+        toast.info('Login request queued. It will sync when youre back online.');
       }
     } catch (error) {
-      const errorMsg = error.response?.data?.error || 'Signup failed. Please try again.';
+      const errorMsg = error.response?.data?.error || 'Login failed. Please try again.';
       toast.error(errorMsg);
     } finally {
       setIsLoading(false);
@@ -51,7 +48,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50">
       {isLoading && <Loading />}
-      <div className="flex w-full h-[580px] max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+      <div className="flex w-full h-[480px] max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden">
         {/* Left Side: Animated Welcome Section */}
         <div className="hidden md:flex w-1/2 bg-gradient-to-br from-primary-500 to-success-500 items-center justify-center p-8 relative overflow-hidden">
           {/* Animated Background Elements */}
@@ -70,57 +67,10 @@ const Signup = () => {
         {/* Right Side: Form Inputs */}
         <div className="w-full md:w-1/2 p-8">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-primary-700 mb-2">Join growEasy</h2>
-            <p className="text-gray-600 text-sm">Create your professional account</p>
+            <h2 className="text-2xl font-bold text-primary-700 mb-2">Login to growEasy</h2>
+            <p className="text-gray-600 text-sm">Don't have an account? <button onClick={() => navigate('/signup')} className="text-primary-600 font-semibold hover:underline">Sign up</button></p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div>
-                <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-1">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all duration-300 bg-white/50 backdrop-blur-sm"
-                  placeholder="Enter first name"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="lastName" className="block text-sm font-semibold text-gray-700 mb-1">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all duration-300 bg-white/50 backdrop-blur-sm"
-                  placeholder="Enter last name"
-                  required
-                />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-1">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all duration-300 bg-white/50 backdrop-blur-sm"
-                placeholder="Enter phone number"
-                required
-              />
-            </div>
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">
                 Email Address
@@ -163,18 +113,12 @@ const Signup = () => {
               disabled={isLoading}
               className="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white p-3 rounded-lg font-bold text-base hover:from-primary-600 hover:to-primary-700 focus:ring-2 focus:ring-primary-400/50 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed outline outline-1 outline-primary-300"
             >
-              {isLoading ? 'Creating Account...' : 'Create Account'}
+              {isLoading ? 'Logging In...' : 'Log In'}
             </button>
           </form>
           <div className="text-center mt-4">
             <p className="text-xs text-gray-600">
-              Already have an account?{' '}
-              <button
-                onClick={() => navigate('/login')}
-                className="text-primary-600 font-semibold hover:underline transition-colors duration-300"
-              >
-                Sign in
-              </button>
+              Forgot your password? <button className="text-primary-600 font-semibold hover:underline">Reset</button>
             </p>
           </div>
         </div>
@@ -183,4 +127,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Login;

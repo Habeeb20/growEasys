@@ -28,7 +28,9 @@ export const signup = [
       // Create new user
       const user = new User({
         userId,
-        name,
+     firstName, 
+     lastName, 
+     phone,
         email,
         password: hashedPassword,
         verificationCode,
@@ -76,7 +78,7 @@ export const login = [
       }
 
       // Generate JWT token
-      const token = generateJwtToken(user.userId, user.email);
+      const token = generateJwtToken(user._id, user.email);
 
       res.status(200).json({ token, message: 'Login successful' });
     } catch (error) {
@@ -221,3 +223,23 @@ export const resetPassword = [
     }
   }
 ];
+
+
+export const dashboard = async (req, res) => {
+  const userId = req.user.id || req.user._id; 
+  console.log('User ID from req.user:', userId);
+
+  try {
+    // Use findOne with userId field since it's a UUID, not ObjectId
+    const user = await User.findById( userId );
+    if (!user) {
+      console.log('User not found for ID:', userId);
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ message: "Welcome on board", user });
+  } catch (error) {
+    console.error('Dashboard error:', error); // Better logging
+    return res.status(500).json({ error: "An error occurred from the server" });
+  }
+};
