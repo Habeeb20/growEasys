@@ -102,6 +102,7 @@ import { getPendingRequests, clearPendingRequest } from './db';
 import { lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Home from './pages/landing/Home';
+import Dashboard from './pages/budget/Dashboard';
 const Signup = lazy(() => import('./pages/auth/Signup'));
 const Login = lazy(()=> import("./pages/auth/Login"))
 const Verifyemail = lazy(()=> import("./pages/auth/VerifyEmail"))
@@ -180,6 +181,7 @@ function AppContent() {
           <Route path="/register" element={<Signup />} />
           <Route path="/verifyemail" element={<Verifyemail />} />
           <Route path="/dashboard" element={<Home />} />
+          <Route path="/budget" element={<Dashboard />} />
 
           {/* Add routes for login, verify-email, forgot-password, reset-password */}
         </Routes>

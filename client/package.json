@@ -23,6 +23,7 @@
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.4",
+    "recharts": "^3.2.1",
     "redux": "^5.0.1",
     "sonner": "^2.0.7",
     "workbox-build": "^7.3.0",

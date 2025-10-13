@@ -1,3 +1,27 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { 
@@ -17,16 +41,16 @@ import ThemeToggle from '../../utils/ThemeToggle';
 import { toast } from 'sonner';
 import Loading from '../../utils/Loading';
 const modules = [
-  { id: 1, name: 'HRM Dashboard', icon: Users, color: 'bg-blue-100 dark:bg-blue-900' },
-  { id: 2, name: 'HMS Module', icon: Activity, color: 'bg-green-100 dark:bg-green-900' },
-  { id: 3, name: 'Sales Tracker', icon: TrendingUp, color: 'bg-orange-100 dark:bg-orange-900' },
-  { id: 4, name: 'Budget Planner', icon: DollarSign, color: 'bg-yellow-100 dark:bg-yellow-900' },
-  { id: 5, name: 'Accounting', icon: Calculator, color: 'bg-purple-100 dark:bg-purple-900' },
-  { id: 6, name: 'Inventory', icon: Package, color: 'bg-indigo-100 dark:bg-indigo-900' },
-  { id: 7, name: 'Requisition', icon: FilePlus, color: 'bg-pink-100 dark:bg-pink-900' },
-  { id: 8, name: 'Procurement', icon: ShoppingBag, color: 'bg-red-100 dark:bg-red-900' },
-  { id: 9, name: 'Workplace', icon: Building, color: 'bg-teal-100 dark:bg-teal-900' },
-  { id: 10, name: 'Analytics', icon: LayoutDashboard, color: 'bg-gray-100 dark:bg-gray-900' },
+  { id: 1, name: 'HRM Dashboard', icon: Users, color: 'bg-blue-100 dark:bg-blue-900', route: 'hrm' },
+  { id: 2, name: 'HMS Module', icon: Activity, color: 'bg-green-100 dark:bg-green-900', route: 'hms' },
+  { id: 3, name: 'Sales Tracker', icon: TrendingUp, color: 'bg-orange-100 dark:bg-orange-900', route: 'sales' },
+  { id: 4, name: 'Budget Planner', icon: DollarSign, color: 'bg-yellow-100 dark:bg-yellow-900', route: 'budget' },
+  { id: 5, name: 'Accounting', icon: Calculator, color: 'bg-purple-100 dark:bg-purple-900', route: 'accounting' },
+  { id: 6, name: 'Inventory', icon: Package, color: 'bg-indigo-100 dark:bg-indigo-900', route: 'inventory' },
+  { id: 7, name: 'Requisition', icon: FilePlus, color: 'bg-pink-100 dark:bg-pink-900', route: 'requisition' },
+  { id: 8, name: 'Procurement', icon: ShoppingBag, color: 'bg-red-100 dark:bg-red-900', route: 'procurement' },
+  { id: 9, name: 'Workplace', icon: Building, color: 'bg-teal-100 dark:bg-teal-900', route: 'workplace' },
+  { id: 10, name: 'Analytics', icon: LayoutDashboard, color: 'bg-gray-100 dark:bg-gray-900', route: 'analytics' },
 ];
 
 const Home = () => {
@@ -70,8 +94,8 @@ const Home = () => {
     fetchDashboard();
   }, []); // Empty dependency array: runs once on mount
 
-  const handleCardClick = (id) => {
-    navigate(`/module/${id}`);
+  const handleCardClick = (module) => {
+    navigate(`/${module.route}`);
   };
 
   if (!user) {
@@ -115,7 +139,7 @@ const Home = () => {
           {modules.map((module) => (
             <div
               key={module.id}
-              onClick={() => handleCardClick(module.id)}
+              onClick={() => handleCardClick(module)}
               className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow hover:shadow-lg cursor-pointer transition-transform hover:-translate-y-1"
             >
               <div className={`w-12 h-12 ${module.color} rounded-lg flex items-center justify-center text-2xl mb-3`}>
