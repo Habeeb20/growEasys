@@ -296,3 +296,38 @@ export const generateUniqueNumber = async() => {
   }
   return uniqueNumber;
 }
+
+
+
+
+
+// Business Details Middleware
+export const checkBusinessDetails = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user.businessDetailsCompleted) {
+      if (!user.businessDetails?.businessName || !user.businessDetails?.address ||
+          !user.businessDetails?.state || !user.businessDetails?.lga) {
+        return res.status(403).json({ error: 'Please complete business details to access the budget planner', redirectTo: '/business-details' });
+      }
+      // Mark as completed to prevent future checks
+      user.businessDetailsCompleted = true;
+      await user.save();
+    }
+    next();
+  } catch (err) {
+    res.status(500).json({ error: 'Server error: ' + err.message });
+  }
+};
+
+
+
+// Permission Middleware
+export const checkPermission = (permission) => async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  if (!user.permissions.includes(permission)) {
+    return res.status(403).json({ error: `Permission denied: ${permission} required` });
+  }
+  next();
+};

@@ -17,6 +17,18 @@ const userSchema = new mongoose.Schema({
 
   email: { type: String, required: true, unique: true },
   password: { type: String },
+    role: { type: String, enum: ['owner', 'staff', 'client', 'viewer'], default: 'owner' },
+    businessDetails: {
+      businessName: String,
+      address: String,
+      state: String,
+      lga: String,
+    },
+      businessDetailsCompleted: { type: Boolean, default: false }, 
+    uniqueUrl: { type: String, unique: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    tenantId: { type: String }, // For multi-tenancy
+    permissions: [{ type: String }], 
 
 
 
