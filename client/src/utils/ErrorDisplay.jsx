@@ -44,7 +44,7 @@ import React from 'react';
                </button>
              )}
              <Link
-               to="/"
+               to="/dasboard"
                className="bg-not-too-deep-yellow text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition transform hover:scale-105"
              >
                Go to Home

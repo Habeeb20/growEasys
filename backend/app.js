@@ -8,6 +8,11 @@ import { connectDb } from "./db/db.js";
 import userRouter from "./routes/userRoute.js";
 // server/index.js
 import compression from 'compression';
+import budgetRouter from "./routes/budget/budgetRoute.js";
+import workflowRouter from "./routes/budget/workflowRoute.js";
+import complianceRouter from "./routes/budget/compliancesRoute.js";
+import expenseRouter from "./routes/budget/expenseRoute.js";
+import reportRouter from "./routes/budget/reportRoute.js";
 
 dotenv.config();
 
@@ -45,6 +50,14 @@ app.get("/", (req, res) => {
 
 
 app.use("/api/auth", userRouter)
+
+
+///budget
+app.use("/api/budgets", budgetRouter)
+app.use("/api/workflow", workflowRouter)
+app.use("/api/compliance", complianceRouter)
+app.use("/api/expenses", expenseRouter)
+app.use("/api/report", reportRouter)
 
 
 

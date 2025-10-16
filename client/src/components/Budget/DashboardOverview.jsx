@@ -1,8 +1,11 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import { DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
 import { LineChart, CartesianGrid, XAxis, YAxis, Line } from 'recharts';
-
+import useBusinessDetailsCheck from './UseBusinessDetailsCheck';
+import BusinessDetailsModal from './BusinessDetailsModal';
+import Loading from '../../utils/Loading';
 const data = [
   { name: 'Marketing', value: 400, fill: '#2563EB' },
   { name: 'Operations', value: 300, fill: '#10B981' },
@@ -27,9 +30,13 @@ const progressData = [
 ];
 
 const OverviewDashboard = () => {
+    const { user, loading, error, needsBusinessDetails, refetch } = useBusinessDetailsCheck();
+      if (loading) {
+        return <Loading />;
+      }
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Dashboard Overview</h2>
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{user?.businessDetails?.businessName || "Dashboard Overview"} </h2>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
