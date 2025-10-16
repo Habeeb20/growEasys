@@ -33,6 +33,7 @@ import React from 'react';
            <p className="text-gray-600 text-center mb-6">
              {errorMessage || 'An unexpected error occurred. Please try again.'}
            </p>
+           
            {/* Action Buttons */}
            <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
              {onRetry && (
@@ -44,7 +45,7 @@ import React from 'react';
                </button>
              )}
              <Link
-               to="/dasboard"
+               to="/dashboard"
                className="bg-not-too-deep-yellow text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition transform hover:scale-105"
              >
                Go to Home

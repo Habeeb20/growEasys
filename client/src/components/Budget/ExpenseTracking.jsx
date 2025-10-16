@@ -129,9 +129,7 @@ const ExpenseTracking = () => {
   };
 
   if (loading) return <Loading />;
-  if
-
-(error) return <ErrorDisplay message={error} />;
+  if (error) return <ErrorDisplay message={error} />;
 
   return (
     <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
@@ -339,7 +337,7 @@ const ExpenseTracking = () => {
   );
 };
 
-// Add Expense Modal Component
+// Add Expense Modal Component (Compact, Professional, Reduced Height)
 const AddExpenseModal = ({ onClose, onSuccess }) => {
   const [form, setForm] = useState({
     category: '', amount: '', date: format(new Date(), 'yyyy-MM-dd'), description: '', vendorName: '', paymentMethod: 'card',
@@ -347,6 +345,7 @@ const AddExpenseModal = ({ onClose, onSuccess }) => {
   });
   const [modalLoading, setModalLoading] = useState(false);
   const [modalError, setModalError] = useState('');
+  const [authCode, setAuthCode] = useState(''); // Separate state for authCode (not sent in form preview)
 
   const token = localStorage.getItem('token');
   const BASE_URL = import.meta.env.VITE_BACKEND_URL;
@@ -356,12 +355,13 @@ const AddExpenseModal = ({ onClose, onSuccess }) => {
     setModalLoading(true);
     setModalError('');
     try {
-      // Prepare payload (split tags, convert amount to number)
+      // Prepare payload (split tags, convert amount to number) - authCode not included in main payload; handle separately if needed for approval logic
       const payload = {
         ...form,
         amount: parseFloat(form.amount),
         taxAmount: parseFloat(form.taxAmount) || 0,
         tags: form.tags.split(',').map(t => t.trim()).filter(t => t),
+        authCode: authCode // Include only on submit for backend verification (instant approval logic assumed on server)
       };
       await axios.post(`${BASE_URL}/expenses`, payload, { headers: { Authorization: `Bearer ${token}` } });
       onSuccess();
@@ -373,27 +373,32 @@ const AddExpenseModal = ({ onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex   items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-      <div className="bg-white  dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 transform transition-all scale-100">
-        <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">Add New Expense</h3>
-        {modalError && <p className="text-red-500 mb-4 text-sm bg-red-50 dark:bg-red-900 p-2 rounded">{modalError}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4  ">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-2 overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-xs w-full mx-auto flex flex-col max-h-[80vh] max-w-[80vh] overflow-hidden border border-gray-200 dark:border-gray-700">
+        {/* Header */}
+        <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Add New Expense</h3>
+          {modalError && <p className="text-red-500 mt-1 text-xs bg-red-50 dark:bg-red-900 p-1 rounded">{modalError}</p>}
+        </div>
+
+        {/* Scrollable Form Body - Compact */}
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-3 space-y-2 text-sm">
           <input
             name="category"
-            placeholder="Category * (e.g., Marketing)"
+            placeholder="Category *"
             value={form.category}
             onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-primary-400"
+            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 focus:ring-1 focus:ring-primary-400 text-gray-800 dark:text-gray-100"
             required
           />
           <input
             name="amount"
             type="number"
             step="0.01"
-            placeholder="Amount * (e.g., 2500.00)"
+            placeholder="Amount *"
             value={form.amount}
             onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-primary-400"
+            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 focus:ring-1 focus:ring-primary-400 text-gray-800 dark:text-gray-100"
             required
           />
           <input
@@ -401,7 +406,7 @@ const AddExpenseModal = ({ onClose, onSuccess }) => {
             type="date"
             value={form.date}
             onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-primary-400"
+            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 focus:ring-1 focus:ring-primary-400 text-gray-800 dark:text-gray-100"
             required
           />
           <textarea
@@ -409,21 +414,21 @@ const AddExpenseModal = ({ onClose, onSuccess }) => {
             placeholder="Description *"
             value={form.description}
             onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-primary-400 h-24 resize-none"
+            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 focus:ring-1 focus:ring-primary-400 h-16 resize-none text-gray-800 dark:text-gray-100"
             required
           />
           <input
             name="vendorName"
-            placeholder="Vendor Name (optional)"
+            placeholder="Vendor Name"
             value={form.vendorName}
             onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-primary-400"
+            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 focus:ring-1 focus:ring-primary-400 text-gray-800 dark:text-gray-100"
           />
           <select
             name="paymentMethod"
             value={form.paymentMethod}
             onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-primary-400"
+            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 focus:ring-1 focus:ring-primary-400 text-gray-800 dark:text-gray-100"
           >
             <option value="cash">Cash</option>
             <option value="card">Credit/Debit Card</option>
@@ -435,42 +440,45 @@ const AddExpenseModal = ({ onClose, onSuccess }) => {
             name="taxAmount"
             type="number"
             step="0.01"
-            placeholder="Tax Amount (optional)"
+            placeholder="Tax Amount"
             value={form.taxAmount}
             onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-primary-400"
+            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 focus:ring-1 focus:ring-primary-400 text-gray-800 dark:text-gray-100"
           />
           <input
             name="tags"
-            placeholder="Tags (comma-separated, e.g., urgent, travel)"
+            placeholder="Tags (comma-separated)"
             value={form.tags}
             onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-primary-400"
+            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 focus:ring-1 focus:ring-primary-400 text-gray-800 dark:text-gray-100"
           />
           <input
             name="authCode"
-            placeholder="Admin Auth Code (for instant approval)"
-            value={form.authCode}
-            onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-primary-400"
+            placeholder="Admin Auth Code"
+            value={authCode}
+            onChange={(e) => setAuthCode(e.target.value)}
+            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 focus:ring-1 focus:ring-primary-400 text-gray-800 dark:text-gray-100"
           />
-          <div className="flex gap-4 pt-4">
-            <button
-              type="submit"
-              disabled={modalLoading}
-              className="flex-1 bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition disabled:opacity-50 shadow-md"
-            >
-              {modalLoading ? 'Submitting...' : 'Submit Expense'}
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 border border-gray-300 dark:border-gray-600 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-            >
-              Cancel
-            </button>
-          </div>
         </form>
+
+        {/* Fixed Footer Buttons */}
+        <div className="p-3 border-t border-gray-200 dark:border-gray-700 flex gap-2 bg-gray-50 dark:bg-gray-900">
+          <button
+            type="submit"
+            disabled={modalLoading}
+            onClick={handleSubmit}
+            className="flex-1 bg-primary-600 text-white py-2 text-sm rounded hover:bg-primary-700 transition disabled:opacity-50 font-medium"
+          >
+            {modalLoading ? 'Submitting...' : 'Submit'}
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 border border-gray-300 dark:border-gray-600 py-2 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium"
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );
