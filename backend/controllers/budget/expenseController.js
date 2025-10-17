@@ -234,7 +234,7 @@ export const getExpenses = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Get expenses error:', error);
+    console.error('Get expenses error, view it here:', error);
     return res.status(500).json({ error: 'Failed to fetch expenses: ' + error.message });
   }
 };

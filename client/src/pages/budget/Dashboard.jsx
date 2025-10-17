@@ -511,7 +511,7 @@ const Dashboard = () => {
   const { user, loading, error, needsBusinessDetails, refetch } = useBusinessDetailsCheck();
   const [activeItem, setActiveItem] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
+  console.log(user)
   const ActiveComponent = sidebarItems.find(item => item.id === activeItem)?.component || OverviewDashboard;
 
   // New states for real data (only if overview)
@@ -557,7 +557,7 @@ const Dashboard = () => {
         setApprovedExpenses(approved);
 
         // Handle business details from user (assume user.businessName or similar; adjust field)
-        setBusinessDetails({ name: user?.businessName || user?.companyName || user?.name || 'Your Business' });
+        setBusinessDetails({ name: user?.businessDetails?.businessName || user?.companyName || user?.name || 'Your Business' });
 
       } catch (err) {
         setDataError('Failed to load dashboard data: ' + (err.response?.data?.error || err.message));
