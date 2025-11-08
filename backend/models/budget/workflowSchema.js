@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
-
+import { Schema } from "mongoose";
 const workflowSchema = new mongoose.Schema({
-  type: { type: String, enum: ['approval', 'comment'], required: true },
-  budgetId: { type: mongoose.Schema.Types.ObjectId, ref: 'Budget' },
-  expenseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Expense' },
-  description: { type: String, required: true },
+   expenseId: { type: Schema.Types.ObjectId, ref: 'Expense', required: true },
   status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  tenantId: { type: String, required: true },
+  approverId: { type: Schema.Types.ObjectId, ref: 'User' },
+  tenantId: { type: Schema.Types.ObjectId, required: true },
+  comments: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date },
 }, { timestamps: true });
 export default mongoose.model('Workflow', workflowSchema);

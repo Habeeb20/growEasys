@@ -1,4 +1,5 @@
 import Report from "../../models/budget/reportSchema.js"
+import Employee from "../../models/budget/EmployeeSchema.js";
 export const createReport = async (req, res) => {
   const { title, type, data } = req.body;
   console.log('Creating report for tenant:', req.user.tenantId);
@@ -32,3 +33,5 @@ export const getReports = async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 };
+
+
